@@ -1,0 +1,233 @@
+---
+title: "CS1"
+author: "Akib Hossain"
+date: "11/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(tidyverse)
+library(GGally)
+library(plotly)
+library(ggplot2)
+library(plyr) # Load first before dplyer 
+library(dplyr)
+library(tidyr)
+library(maps)
+library(mapproj)
+library(ggalt)
+library(class)
+library(caret)
+library(e1071)
+library(tm)
+library(mvtnorm)
+#library(xlsx)
+library(leaflet)
+library(ggvis)
+```
+
+
+Testing the text output
+
+
+# Case study Questions 
+## 1. How many breweries are present in each state?
+```{r}
+beer_csv_loc <- "./Beers.csv"
+breweries_csv_loc <- "./Breweries.csv"
+# Read in data 
+Beer <- read.csv(beer_csv_loc, header = TRUE)
+Breweries <- read.csv(breweries_csv_loc, header = TRUE)
+#Beer = read.csv(file.choose(),header = TRUE) # read in company data
+
+#Breweries = read.csv(file.choose(),header = TRUE) # read in company data
+# Create a seperate data frame to store state data 
+### Note: This data set counts the district of columbia as a state
+num_of_breweries_by_state <- data.frame(table(Breweries$State))
+##### Celia Banks #####
+#Begin prepare an interactive geo map of breweries by state
+#set the map
+leaflet() %>% addTiles()
+#add popup for brewery information
+brewery_map <- Breweries %>% mutate(popup_info=paste(Name,"<br/>",City,"<br>",State,"<br>"))
+#tweak the map with info layout, set circles smaller to enhance visual
+#leaflet() %>% addTiles() %>% addCircleMarkers(data=brewery_map, 
+ #                                             lat=~Latitude, 
+ #                                             lng=~Longitude, 
+  #                                            radius=~1, 
+  #                                            popup=~popup_info)
+#End prepare an interactive geo map of breweries by state#
+#corresponding distribution plot of breweries by state
+ggplot(brewery_map, aes(x=as.factor(State), color="blue")) +
+       geom_bar(color="blue") +
+       ggtitle("Distribution of Breweries by State") +
+       xlab("State") +
+       geom_text(stat='count', aes(label=after_stat(count)), vjust=-.25) +
+       theme(legend.position="none", axis.text.x = element_text(angle = 90)) +
+       theme(plot.title = element_text(hjust = 0.5))
+#corresponding distribution plot of breweries by region
+#ggplot(brewery_map, aes(x=as.factor(Region), color="green")) +
+#       geom_bar(color="green") +
+##       ggtitle("Distribution of Breweries by Region") +
+ #      xlab("Region") +
+ #      geom_text(stat='count', aes(label=after_stat(count)), vjust=-.25) +
+ #      theme(legend.position="none", axis.text.x = element_text(angle = 90)) +
+ #      theme(plot.title = element_text(hjust = 0.5))
+##### END CB #####
+```
+
+
+## 2. Merge beer data with the breweries data. Print the first 6 observations and
+#the last six observations to check the merged file
+```{r}
+# Change column name of beer_data to match brewery_data to use as a primary key
+colnames(Beer)[5] <- "Brew_ID"
+# Merge two data bases using merge
+full_brew_data <- merge(Breweries, Beer, by="Brew_ID")
+# Rename columns 2 and 5 that were changed during the merge
+colnames(full_brew_data)[2] <- "Brewery"
+colnames(full_brew_data)[5] <- "Beer_Name"
+# Print first 6 and last 6 observations 
+head(full_brew_data, n=6)
+tail(full_brew_data, n=6)
+
+
+```
+
+
+## 3. Address any NA values
+```{r}
+# Create two new tables where one has only ABV with no <NA>'s and the other 
+state_abv <- data.frame(State=full_brew_data$State, ABV=full_brew_data$ABV)
+state_abv <- state_abv %>% drop_na(ABV)
+# Do the same for IBU 
+state_ibu <- data.frame(State=full_brew_data$State, IBU=full_brew_data$IBU)
+state_ibu <- state_ibu %>% drop_na(IBU)
+```
+
+
+## 4. Compute the median alcohol content and international bitterness unit for each
+##state. Plot a bar chart 
+```{r, fig.height=7, fig.width=12}
+# Find the average ABV for the state_abv table 
+avg_state_abv <- ddply(state_abv, .(State), function(x) median(x$ABV))
+colnames(avg_state_abv)[2] <- "Median_ABV" # Rename the column
+# Drop DC. It's not a state....yet
+avg_state_abv <- avg_state_abv[-c(8),] # DC is equal to position 8 on the table 
+# Order the states by Decending ABV content 
+avg_state_abv <- avg_state_abv[order(avg_state_abv$Median_ABV, decreasing=TRUE),]
+# Find Average IBU
+avg_state_ibu <- ddply(state_ibu, .(State), function(x) median(x$IBU))
+colnames(avg_state_ibu)[2] <- "Median_IBU" # Rename column
+# Order the states by IBU Decending 
+avg_state_ibu <- avg_state_ibu[order(avg_state_ibu$Median_IBU, decreasing=TRUE),]
+# Plot Average Alcohol by Volume per state
+ggplot(avg_state_abv, aes(x=reorder(State, desc(Median_ABV)), y=Median_ABV, fill=State)) + 
+       geom_col(show.legend = FALSE, width=.9, position="dodge") +
+       ggtitle("Median ABV per State") +
+       xlab("State") + 
+       ylab("Median Alcohol by Volume") 
+# Plot Average International Bitterness Unit per State 
+ggplot(avg_state_ibu, aes(x=reorder(State, desc(Median_IBU)), y=Median_IBU, fill=State)) + 
+       geom_col(show.legend = FALSE, width=.9, position="dodge") +
+       ggtitle("Median IBU per State") + 
+       xlab("State") + 
+       ylab("Median IBU")
+```
+
+
+
+
+
+
+
+## 5. Which state has the the Max ABV. Which has the 
+```{r}
+# Get the State with the highest average ABV
+#state_max_abv <- avg_state_abv[which.max(avg_state_abv$Median_ABV),] # KY
+state_max_abv <- full_brew_data[which.max(full_brew_data$ABV),] # CO
+state_max_abv[c(4,7)]
+# Get the State with the highest average IBU
+state_max_ibu <- full_brew_data[which.max(full_brew_data$IBU),] # OR
+state_max_ibu[c(4,8)]
+```
+### Kentucky has the highest percentage of alcohal by volume while Maine has the highest IBU. 
+
+
+## 6. Comment on the Summary stats and distribution of the ABV variable 
+```{r}
+summary(state_abv)
+ggplot(state_abv, aes(x=ABV)) + geom_histogram() # Right Skewness
+ggplot(state_abv, aes(x=ABV)) + geom_boxplot()
+```
+
+
+##7. Is there an apparent relationship between the bitterness of the beer and its alcoholic content? 
+```{r}
+# Create a new data frame from the beer data that removes rows that have <NA> in 
+# the ABV and IBU columns
+beer_data_no_na <- Beer
+beer_data_no_na <- beer_data_no_na %>% drop_na(ABV)
+beer_data_no_na <- beer_data_no_na %>% drop_na(IBU)
+# Scatter plot to show raw data 
+ggplot(beer_data_no_na, aes(x=ABV, y=IBU, colour=Style)) + 
+       geom_point(show.legend = FALSE) + 
+       ggtitle("ABV vs IBU") +
+       xlab("ABV in %") + 
+       ylab("IBU")
+# Plot a smooth curve to see a more "linear" pattern 
+ggplot(beer_data_no_na, aes(x=ABV, y=IBU)) + 
+       geom_smooth() +
+       ggtitle("ABV vs IBU") + 
+       xlab("ABV in %") + 
+       ylab("IBU")
+```
+
+
+## 8. investigate the difference with respect to IBU and ABV between IPAs (India Pale Ales) 
+#and other types of Ale. Use KNN.
+```{r, include=FALSE}
+# Create a data frame with only IPA's
+#df1[grep("dog",df1$type),]
+ipa_beers <- beer_data_no_na[grep("IPA",beer_data_no_na$Style),]
+# Change the Sytle column to only have the value of IPA for easier model training
+ipa_beers$Style <- "IPA"
+ales_beer <- beer_data_no_na[grep("Ale",beer_data_no_na$Style),]
+# Change the Sytle column to only have the value of Ale for easier model training
+ales_beer$Style <- "Ale"
+# Combine the two data sets 
+ipas_and_ales <- rbind(ipa_beers, ales_beer)
+# plot the data to get an initial view of the data
+ggplot(ipas_and_ales, aes(x=ABV, y=IBU, colour=Style)) + geom_point()
+# Create train and test data frames
+ipas_and_ales_train <- ipas_and_ales # train data needs to be a duplicate of orig
+ipas_and_ales_test <- data.frame()
+# Split 70/30 (Train/Test)
+samples_to_take <- round(as.numeric(nrow(ipas_and_ales_train)*.3), digits=0)
+for (row in 1:samples_to_take) {
+  tmp_row <- sample_n(ipas_and_ales_train, 1) # Take sample
+  # Add Sample to test data
+  ipas_and_ales_test <- ipas_and_ales_test %>% rbind(tmp_row)
+  # Remove Sample from train data
+  ipas_and_ales_train <- ipas_and_ales_train[!(ipas_and_ales_train$Beer_ID==tmp_row$Beer_ID),]
+}
+# find an optimal K value for the KNN model
+style_accuracy <- data.frame(accuract=numeric(50), k=numeric(50))
+for (iter in 1:50) {
+  style_class <- knn(ipas_and_ales_train[,c(3,4)], ipas_and_ales_test[c(3,4)],
+                     ipas_and_ales_train$Style,
+                     prob=TRUE, k=iter)
+  table(ipas_and_ales_test$Style, style_class)
+  cm <- confusionMatrix(table(ipas_and_ales_test$Style, style_class))
+  style_accuracy$accuracy[iter] <- cm$overall[1]
+  style_accuracy$k[iter] <- iter
+}
+#plot(style_accuracy$k, style_accuracy$accuracy, type="l", xlab="k")
+plot_ly(style_accuracy, x=style_accuracy$k, y=style_accuracy$accuracy, 
+        type="scatter", mode="lines")
+##
+## On average this loop gives me an optimal k level of k=5,6,7
+##
+```
