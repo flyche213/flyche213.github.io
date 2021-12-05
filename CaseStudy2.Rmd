@@ -33,7 +33,7 @@ Employee <- read.csv(Employee_csv_loc, header = TRUE)
  
 #Graphs----------------------------------------
 p = Employee %>% 
-ggplot(aes(x = Age)) + geom_histogram()
+ggplot(aes(x = Gender)) + geom_bar()
 ggplotly(p)
 
 p = Employee %>% #filter(Age == (24:47))  %>% 
@@ -120,7 +120,7 @@ ggplot(aes(x = Department, fill = as.factor(WorkLifeBalance))) + geom_bar()
 ggplotly(HR) + theme_economist()
 
 HR + ggtitle("Human Resource best worklife balance") +
-  xlab("Department") + ylab("Employee")
+  xlab("Department") + ylab("Employee") + labs(fill = "Work Life Balance")
 
 #Sales have lowest attrition
 S = Employee %>% filter(Employee$Department == 'Sales') %>%
@@ -128,7 +128,7 @@ ggplot(aes(x = Department, fill = as.factor(Attrition))) + geom_bar()
 ggplotly(S) + theme_economist()
 
 S + ggtitle("Sales have the lowest Attrition") +
-  xlab("Department") + ylab("Attrition")
+  xlab("Department") + ylab("Attrition") + labs(fill = "Attrition")
 
 #sales has a higher dailyrate
 DR = Yes %>% 
