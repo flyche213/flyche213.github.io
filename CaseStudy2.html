@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Akib Hossain" />
+
+<meta name="date" content="2021-11-22" />
+
+<title>TalentManagement</title>
+
+<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Data Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="BeerStudy.html">BeerStudy</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">TalentManagement</h1>
+<h4 class="author">Akib Hossain</h4>
+<h4 class="date">11/22/2021</h4>
+
+</div>
+
+
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(GGally)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
+##   method from   
+##   +.gg   ggplot2</code></pre>
+<pre class="r"><code>library(ggthemes)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
+## ✓ tidyr   1.1.4     ✓ stringr 1.4.0
+## ✓ readr   2.0.1     ✓ forcats 0.5.1
+## ✓ purrr   0.3.4</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks plotly::filter(), stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(class)
+library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caret&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     lift</code></pre>
+<pre class="r"><code>library(e1071)
+library(fpp)</code></pre>
+<pre><code>## Loading required package: forecast</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
+##   method            from
+##   as.zoo.data.frame zoo</code></pre>
+<pre><code>## Loading required package: fma</code></pre>
+<pre><code>## 
+## Attaching package: &#39;fma&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:GGally&#39;:
+## 
+##     pigs</code></pre>
+<pre><code>## Loading required package: expsmooth</code></pre>
+<pre><code>## Loading required package: lmtest</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre><code>## Loading required package: tseries</code></pre>
+<pre class="r"><code>library(shiny)
+# install.packages(&quot;pscl&quot;, repos = &quot;https://cran.rstudio.com&quot;)
+# options(repos=&quot;https://cran.rstudio.com&quot; )
+
+ 
+ 
+ 
+Employee_csv_loc &lt;- &quot;./CaseStudy2-data.csv&quot;
+
+Employee &lt;- read.csv(Employee_csv_loc, header = TRUE)
+ 
+ 
+#Graphs----------------------------------------
+p = Employee %&gt;% 
+ggplot(aes(x = Age)) + geom_histogram()
+ggplotly(p)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<div id="htmlwidget-3f2d59b746bc8ac9c8b2" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3f2d59b746bc8ac9c8b2">{"x":{"data":[{"orientation":"v","width":[1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[17.3793103448276,18.8275862068966,20.2758620689655,21.7241379310345,23.1724137931034,24.6206896551724,26.0689655172414,27.5172413793103,28.9655172413793,30.4137931034483,31.8620689655172,33.3103448275862,34.7586206896552,36.2068965517241,37.6551724137931,39.1034482758621,40.551724137931,42,43.448275862069,44.8965517241379,46.3448275862069,47.7931034482759,49.2413793103448,50.6896551724138,52.1379310344828,53.5862068965517,55.0344827586207,56.4827586206897,57.9310344827586,59.3793103448276],"y":[6,7,10,8,7,34,20,52,41,76,38,92,48,42,67,18,54,29,38,26,41,13,14,25,10,14,12,12,7,9],"text":["count:  6<br />Age: 17.37931","count:  7<br />Age: 18.82759","count: 10<br />Age: 20.27586","count:  8<br />Age: 21.72414","count:  7<br />Age: 23.17241","count: 34<br />Age: 24.62069","count: 20<br />Age: 26.06897","count: 52<br />Age: 27.51724","count: 41<br />Age: 28.96552","count: 76<br />Age: 30.41379","count: 38<br />Age: 31.86207","count: 92<br />Age: 33.31034","count: 48<br />Age: 34.75862","count: 42<br />Age: 36.20690","count: 67<br />Age: 37.65517","count: 18<br />Age: 39.10345","count: 54<br />Age: 40.55172","count: 29<br />Age: 42.00000","count: 38<br />Age: 43.44828","count: 26<br />Age: 44.89655","count: 41<br />Age: 46.34483","count: 13<br />Age: 47.79310","count: 14<br />Age: 49.24138","count: 25<br />Age: 50.68966","count: 10<br />Age: 52.13793","count: 14<br />Age: 53.58621","count: 12<br />Age: 55.03448","count: 12<br />Age: 56.48276","count:  7<br />Age: 57.93103","count:  9<br />Age: 59.37931"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(89,89,89,1)","line":{"width":1.88976377952756,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":37.2602739726027},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[14.4827586206897,62.2758620689655],"tickmode":"array","ticktext":["20","30","40","50","60"],"tickvals":[20,30,40,50,60],"categoryorder":"array","categoryarray":["20","30","40","50","60"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Age","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4.6,96.6],"tickmode":"array","ticktext":["0","25","50","75"],"tickvals":[0,25,50,75],"categoryorder":"array","categoryarray":["0","25","50","75"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c0c02cc107f4":{"x":{},"type":"bar"}},"cur_data":"c0c02cc107f4","visdat":{"c0c02cc107f4":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>p = Employee %&gt;% #filter(Age == (24:47))  %&gt;% 
+ggplot(aes(x = Age)) + geom_histogram()
+ggplotly(p)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<div id="htmlwidget-de03e636785be7ec3d09" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-de03e636785be7ec3d09">{"x":{"data":[{"orientation":"v","width":[1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897,1.44827586206895,1.44827586206897,1.44827586206897],"base":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"x":[17.3793103448276,18.8275862068966,20.2758620689655,21.7241379310345,23.1724137931034,24.6206896551724,26.0689655172414,27.5172413793103,28.9655172413793,30.4137931034483,31.8620689655172,33.3103448275862,34.7586206896552,36.2068965517241,37.6551724137931,39.1034482758621,40.551724137931,42,43.448275862069,44.8965517241379,46.3448275862069,47.7931034482759,49.2413793103448,50.6896551724138,52.1379310344828,53.5862068965517,55.0344827586207,56.4827586206897,57.9310344827586,59.3793103448276],"y":[6,7,10,8,7,34,20,52,41,76,38,92,48,42,67,18,54,29,38,26,41,13,14,25,10,14,12,12,7,9],"text":["count:  6<br />Age: 17.37931","count:  7<br />Age: 18.82759","count: 10<br />Age: 20.27586","count:  8<br />Age: 21.72414","count:  7<br />Age: 23.17241","count: 34<br />Age: 24.62069","count: 20<br />Age: 26.06897","count: 52<br />Age: 27.51724","count: 41<br />Age: 28.96552","count: 76<br />Age: 30.41379","count: 38<br />Age: 31.86207","count: 92<br />Age: 33.31034","count: 48<br />Age: 34.75862","count: 42<br />Age: 36.20690","count: 67<br />Age: 37.65517","count: 18<br />Age: 39.10345","count: 54<br />Age: 40.55172","count: 29<br />Age: 42.00000","count: 38<br />Age: 43.44828","count: 26<br />Age: 44.89655","count: 41<br />Age: 46.34483","count: 13<br />Age: 47.79310","count: 14<br />Age: 49.24138","count: 25<br />Age: 50.68966","count: 10<br />Age: 52.13793","count: 14<br />Age: 53.58621","count: 12<br />Age: 55.03448","count: 12<br />Age: 56.48276","count:  7<br />Age: 57.93103","count:  9<br />Age: 59.37931"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(89,89,89,1)","line":{"width":1.88976377952756,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":37.2602739726027},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[14.4827586206897,62.2758620689655],"tickmode":"array","ticktext":["20","30","40","50","60"],"tickvals":[20,30,40,50,60],"categoryorder":"array","categoryarray":["20","30","40","50","60"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Age","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4.6,96.6],"tickmode":"array","ticktext":["0","25","50","75"],"tickvals":[0,25,50,75],"categoryorder":"array","categoryarray":["0","25","50","75"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c0c07234ac33":{"x":{},"type":"bar"}},"cur_data":"c0c07234ac33","visdat":{"c0c07234ac33":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>Employee %&gt;% filter(Age == (24:47))  %&gt;% 
+ggplot(aes(y = Age, color = Attrition)) + 
+geom_boxplot()</code></pre>
+<pre><code>## Warning in Age == (24:47): longer object length is not a multiple of shorter
+## object length</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+<pre class="r"><code>Yes = Employee %&gt;% filter(Attrition == &quot;Yes&quot;)
+
+#Age and Attrition
+#Middle aged individuals have a lower attrition
+A = Employee %&gt;% #filter(Age &gt; 24 | Age &lt; 46)  %&gt;% 
+ggplot(aes(y = Age, color = Attrition)) + 
+geom_boxplot() + ggtitle(&quot;Age and Attrition&quot;) +
+theme_economist()
+
+A + ggtitle(&quot;Age and Attrition&quot;) +
+  xlab(&quot;Turnover&quot;) + ylab(&quot;Age&quot;) + labs(color = &quot;Attrition&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-4.png" width="672" /></p>
+<pre class="r"><code>#Healthcare Rep and Research Scientist have the highest job satisfaction
+#JobRole = Employee %&gt;% group_by(JobRole) %&gt;% summarize(meanJS = mean(JobSatisfaction), count = #n()) 
+
+# p = JobRole %&gt;% ggplot(aes(x=JobRole, y = meanJS)) + geom_col()
+#ggplotly(p)
+
+# p = q %&gt;% ggplot(aes(x=JobRole, y = count, color = as.factor(Attrition) )) + geom_point()
+#ggplotly(p)
+
+
+
+
+
+#Distance and Attition
+# A lower distance from work has a high number of non attrition.
+
+
+
+D = ggplot(Employee, aes( x = DistanceFromHome, color = as.factor(Attrition))) +
+  geom_histogram(position = &quot;Dodge&quot;) + theme_economist()
+ 
+D + ggtitle(&quot;Distance and Attrition&quot;) +
+  xlab(&quot;Distance from home&quot;) + ylab(&quot;Employees&quot;) + labs(color = &quot;Attrition&quot;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-5.png" width="672" /></p>
+<pre class="r"><code>#Life Sciences has the highest Attrition
+LS = Yes %&gt;% 
+ggplot(aes(x = EducationField)) + geom_bar(color = &quot;Blue&quot;, fill = &quot;Orange&quot;)
+ggplotly(LS) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>LS + ggtitle(&quot;Life Sciences has the highest Attrition&quot;) +
+  xlab(&quot;Education&quot;) + ylab(&quot;Attrition&quot;) </code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-6.png" width="672" /></p>
+<pre class="r"><code>#Male have a higher Attrition
+AT = Yes %&gt;% 
+ggplot(aes(x = Gender)) +geom_bar(color = &quot;Blue&quot;, fill = &quot;Orange&quot;)
+ggplotly(AT) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>AT + ggtitle(&quot;Men have the highest Attrition&quot;) +
+  xlab(&quot;Gender&quot;) + ylab(&quot;Attrition&quot;) </code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-7.png" width="672" /></p>
+<pre class="r"><code>#R&amp;D have the highest number of employees
+D = Employee %&gt;% 
+ggplot(aes(x = Department)) + geom_bar(color = &quot;Black&quot;, fill = &quot;Red&quot;)
+ggplotly(D) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>D + ggtitle(&quot;Research and Development&quot;) +
+  xlab(&quot;Department&quot;) + ylab(&quot;Employees&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-8.png" width="672" /></p>
+<pre class="r"><code>#HR have highest worklife balance
+HR = Employee %&gt;% filter(Employee$Department == &#39;Human Resources&#39;) %&gt;%
+ggplot(aes(x = Department, fill = as.factor(WorkLifeBalance))) + geom_bar()
+ggplotly(HR) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>HR + ggtitle(&quot;Human Resource best worklife balance&quot;) +
+  xlab(&quot;Department&quot;) + ylab(&quot;Employee&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-9.png" width="672" /></p>
+<pre class="r"><code>#Sales have lowest attrition
+S = Employee %&gt;% filter(Employee$Department == &#39;Sales&#39;) %&gt;%
+ggplot(aes(x = Department, fill = as.factor(Attrition))) + geom_bar()
+ggplotly(S) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>S + ggtitle(&quot;Sales have the lowest Attrition&quot;) +
+  xlab(&quot;Department&quot;) + ylab(&quot;Attrition&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-10.png" width="672" /></p>
+<pre class="r"><code>#sales has a higher dailyrate
+DR = Yes %&gt;% 
+ggplot(aes(x = Department, y = DailyRate, fill = as.factor(Department))) + geom_boxplot()
+ggplotly(DR) + theme_economist()</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>DR + ggtitle(&quot;Sales has a higher daily rate&quot;) +
+  xlab(&quot;Department&quot;) + ylab(&quot;Daily Rate&quot;) + labs(fill = &quot;Department&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-11.png" width="672" /></p>
+<pre class="r"><code>#KNN -------------------------------------------------------
+
+set.seed(6)
+splitPerc = .75
+MaleFemale = Yes %&gt;% filter (EducationField == &quot;Marketing&quot; |EducationField == &quot;Life Sciences&quot; ) 
+summary(MaleFemale)</code></pre>
+<pre><code>##        ID             Age         Attrition         BusinessTravel    
+##  Min.   : 28.0   Min.   :18.00   Length:73          Length:73         
+##  1st Qu.:222.0   1st Qu.:29.00   Class :character   Class :character  
+##  Median :439.0   Median :33.00   Mode  :character   Mode  :character  
+##  Mean   :437.3   Mean   :34.49                                        
+##  3rd Qu.:650.0   3rd Qu.:40.00                                        
+##  Max.   :863.0   Max.   :56.00                                        
+##    DailyRate       Department        DistanceFromHome   Education    
+##  Min.   : 103.0   Length:73          Min.   : 1.00    Min.   :1.000  
+##  1st Qu.: 441.0   Class :character   1st Qu.: 2.00    1st Qu.:2.000  
+##  Median : 703.0   Mode  :character   Median : 7.00    Median :3.000  
+##  Mean   : 780.6                      Mean   :10.63    Mean   :2.726  
+##  3rd Qu.:1102.0                      3rd Qu.:19.00    3rd Qu.:3.000  
+##  Max.   :1479.0                      Max.   :29.00    Max.   :5.000  
+##  EducationField     EmployeeCount EmployeeNumber   EnvironmentSatisfaction
+##  Length:73          Min.   :1     Min.   :   1.0   Min.   :1.000          
+##  Class :character   1st Qu.:1     1st Qu.: 364.0   1st Qu.:1.000          
+##  Mode  :character   Median :1     Median : 994.0   Median :2.000          
+##                     Mean   :1     Mean   : 935.8   Mean   :2.288          
+##                     3rd Qu.:1     3rd Qu.:1379.0   3rd Qu.:3.000          
+##                     Max.   :1     Max.   :1968.0   Max.   :4.000          
+##     Gender            HourlyRate     JobInvolvement    JobLevel    
+##  Length:73          Min.   : 33.00   Min.   :1.00   Min.   :1.000  
+##  Class :character   1st Qu.: 52.00   1st Qu.:2.00   1st Qu.:1.000  
+##  Mode  :character   Median : 70.00   Median :3.00   Median :1.000  
+##                     Mean   : 68.56   Mean   :2.37   Mean   :1.726  
+##                     3rd Qu.: 84.00   3rd Qu.:3.00   3rd Qu.:2.000  
+##                     Max.   :100.00   Max.   :4.00   Max.   :5.000  
+##    JobRole          JobSatisfaction MaritalStatus      MonthlyIncome  
+##  Length:73          Min.   :1.000   Length:73          Min.   : 1102  
+##  Class :character   1st Qu.:1.000   Class :character   1st Qu.: 2404  
+##  Mode  :character   Median :3.000   Mode  :character   Median : 3730  
+##                     Mean   :2.425                      Mean   : 5134  
+##                     3rd Qu.:3.000                      3rd Qu.: 6172  
+##                     Max.   :4.000                      Max.   :19845  
+##   MonthlyRate    NumCompaniesWorked    Over18            OverTime        
+##  Min.   : 2493   Min.   :0.000      Length:73          Length:73         
+##  1st Qu.: 8059   1st Qu.:1.000      Class :character   Class :character  
+##  Median :13492   Median :1.000      Mode  :character   Mode  :character  
+##  Mean   :13751   Mean   :3.082                                           
+##  3rd Qu.:19479   3rd Qu.:5.000                                           
+##  Max.   :26959   Max.   :9.000                                           
+##  PercentSalaryHike PerformanceRating RelationshipSatisfaction StandardHours
+##  Min.   :11.00     Min.   :3.000     Min.   :1.000            Min.   :80   
+##  1st Qu.:12.00     1st Qu.:3.000     1st Qu.:1.000            1st Qu.:80   
+##  Median :14.00     Median :3.000     Median :2.000            Median :80   
+##  Mean   :15.01     Mean   :3.151     Mean   :2.466            Mean   :80   
+##  3rd Qu.:18.00     3rd Qu.:3.000     3rd Qu.:4.000            3rd Qu.:80   
+##  Max.   :24.00     Max.   :4.000     Max.   :4.000            Max.   :80   
+##  StockOptionLevel TotalWorkingYears TrainingTimesLastYear WorkLifeBalance
+##  Min.   :0.0000   Min.   : 0.000    Min.   :0.000         Min.   :1.000  
+##  1st Qu.:0.0000   1st Qu.: 3.000    1st Qu.:2.000         1st Qu.:2.000  
+##  Median :0.0000   Median : 7.000    Median :3.000         Median :3.000  
+##  Mean   :0.5342   Mean   : 8.521    Mean   :2.712         Mean   :2.603  
+##  3rd Qu.:1.0000   3rd Qu.:10.000    3rd Qu.:3.000         3rd Qu.:3.000  
+##  Max.   :3.0000   Max.   :33.000    Max.   :6.000         Max.   :4.000  
+##  YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion
+##  Min.   : 0.000   Min.   : 0.000     Min.   : 0.00          
+##  1st Qu.: 1.000   1st Qu.: 0.000     1st Qu.: 0.00          
+##  Median : 4.000   Median : 2.000     Median : 1.00          
+##  Mean   : 5.575   Mean   : 2.918     Mean   : 2.26          
+##  3rd Qu.: 8.000   3rd Qu.: 4.000     3rd Qu.: 2.00          
+##  Max.   :32.000   Max.   :14.000     Max.   :15.00          
+##  YearsWithCurrManager
+##  Min.   : 0.000      
+##  1st Qu.: 0.000      
+##  Median : 2.000      
+##  Mean   : 3.219      
+##  3rd Qu.: 7.000      
+##  Max.   :14.000</code></pre>
+<pre class="r"><code>trainIndices = sample(1:dim(MaleFemale)[1],round(splitPerc * dim(MaleFemale)[1]))
+train = MaleFemale[trainIndices,]
+test = MaleFemale[-trainIndices,]
+
+MaleFemale %&gt;% ggplot(aes(x = HourlyRate, TotalWorkingYears, color = Gender)) + geom_point() + ggtitle(&quot;Higher hourly rate work longer&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-12.png" width="672" /></p>
+<pre class="r"><code>MaleFemaleM = Yes %&gt;% filter (EducationField == &quot;Marketing&quot;)
+MaleFemaleM %&gt;% ggplot(aes(x = Gender,  color = EducationField)) + geom_bar() + ggtitle(&quot;Marketing and Gender&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-13.png" width="672" /></p>
+<pre class="r"><code>MaleFemaleL = Yes %&gt;% filter (EducationField == &quot;Life Sciences&quot;)
+MaleFemaleL %&gt;% ggplot(aes(x = Gender,  color = EducationField)) + geom_bar() + ggtitle(&quot;Life Sciences and Gender&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-14.png" width="672" /></p>
+<pre class="r"><code># k = 3
+classifications = knn(train[,c(1,2)],test[,c(1,2)],train$EducationField, prob = TRUE, k = 3)
+table(classifications,test$EducationField)</code></pre>
+<pre><code>##                
+## classifications Life Sciences Marketing
+##   Life Sciences            12         4
+##   Marketing                 2         0</code></pre>
+<pre class="r"><code>confusionMatrix(table(classifications,test$EducationField))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                
+## classifications Life Sciences Marketing
+##   Life Sciences            12         4
+##   Marketing                 2         0
+##                                           
+##                Accuracy : 0.6667          
+##                  95% CI : (0.4099, 0.8666)
+##     No Information Rate : 0.7778          
+##     P-Value [Acc &gt; NIR] : 0.9164          
+##                                           
+##                   Kappa : -0.1739         
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.6831          
+##                                           
+##             Sensitivity : 0.8571          
+##             Specificity : 0.0000          
+##          Pos Pred Value : 0.7500          
+##          Neg Pred Value : 0.0000          
+##              Prevalence : 0.7778          
+##          Detection Rate : 0.6667          
+##    Detection Prevalence : 0.8889          
+##       Balanced Accuracy : 0.4286          
+##                                           
+##        &#39;Positive&#39; Class : Life Sciences   
+## </code></pre>
+<pre class="r"><code>#Prediction
+Model1_fit = lm(HourlyRate ~ JobSatisfaction+MonthlyIncome+MonthlyRate, data = train)
+summary(Model1_fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = HourlyRate ~ JobSatisfaction + MonthlyIncome + MonthlyRate, 
+##     data = train)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -33.420 -13.531  -0.614  12.817  35.159 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      6.948e+01  7.963e+00   8.725 1.09e-11 ***
+## JobSatisfaction -2.617e+00  2.633e+00  -0.994    0.325    
+## MonthlyIncome    1.129e-03  7.119e-04   1.586    0.119    
+## MonthlyRate     -8.982e-06  4.035e-04  -0.022    0.982    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 19.45 on 51 degrees of freedom
+## Multiple R-squared:  0.06176,    Adjusted R-squared:  0.006571 
+## F-statistic: 1.119 on 3 and 51 DF,  p-value: 0.3501</code></pre>
+<pre class="r"><code>Model1_Preds = predict(Model1_fit, newdata = test)
+as.data.frame(Model1_Preds)</code></pre>
+<pre><code>##    Model1_Preds
+## 1      75.98240
+## 4      71.74060
+## 5      66.29327
+## 6      60.20214
+## 9      68.16919
+## 11     75.04463
+## 15     69.02958
+## 17     66.71251
+## 23     62.04985
+## 24     65.59483
+## 26     66.80199
+## 28     66.20254
+## 47     69.80843
+## 51     69.72508
+## 54     69.05854
+## 63     85.47703
+## 64     69.47305
+## 65     67.59543</code></pre>
+<pre class="r"><code>MSPE = mean((test$HourlyRate - Model1_Preds)^2)
+sqrt(MSPE)</code></pre>
+<pre><code>## [1] 21.07824</code></pre>
+<pre class="r"><code>test %&gt;% ggplot(aes(x = DistanceFromHome, y = HourlyRate)) + geom_point() + geom_smooth(method = &quot;lm&quot;) + geom_line(data = test, aes( x = DistanceFromHome, y = Model1_Preds, col = &quot;red&quot;)) </code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-15.png" width="672" /></p>
+<pre class="r"><code>plot(x=Model1_Preds, y=test$HourlyRate,
+     xlab=&#39;Predicted Values&#39;,
+     ylab=&#39;Actual Values&#39;,
+     main=&#39;Predicted vs. Actual Values&#39;)
+
+#add diagonal line for estimated regression line
+abline(a=0, b=1)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-16.png" width="672" /></p>
+<pre class="r"><code>#KNN 2 -------------------------------------------------------
+
+set.seed(6)
+splitPerc = .75
+Male = Yes %&gt;% filter (EducationField == &quot;Life Sciences&quot;) %&gt;% filter ( Gender == &quot;Male&quot;) 
+summary(Male)</code></pre>
+<pre><code>##        ID             Age        Attrition         BusinessTravel    
+##  Min.   : 29.0   Min.   :18.0   Length:33          Length:33         
+##  1st Qu.:233.0   1st Qu.:29.0   Class :character   Class :character  
+##  Median :429.0   Median :34.0   Mode  :character   Mode  :character  
+##  Mean   :391.9   Mean   :35.7                                        
+##  3rd Qu.:568.0   3rd Qu.:41.0                                        
+##  Max.   :841.0   Max.   :56.0                                        
+##    DailyRate       Department        DistanceFromHome   Education    
+##  Min.   : 103.0   Length:33          Min.   : 1.000   Min.   :1.000  
+##  1st Qu.: 391.0   Class :character   1st Qu.: 2.000   1st Qu.:2.000  
+##  Median : 626.0   Mode  :character   Median : 6.000   Median :3.000  
+##  Mean   : 730.4                      Mean   : 9.879   Mean   :2.788  
+##  3rd Qu.:1089.0                      3rd Qu.:23.000   3rd Qu.:3.000  
+##  Max.   :1475.0                      Max.   :29.000   Max.   :4.000  
+##  EducationField     EmployeeCount EmployeeNumber EnvironmentSatisfaction
+##  Length:33          Min.   :1     Min.   :  19   Min.   :1.00           
+##  Class :character   1st Qu.:1     1st Qu.: 364   1st Qu.:1.00           
+##  Mode  :character   Median :1     Median :1127   Median :2.00           
+##                     Mean   :1     Mean   :1032   Mean   :2.03           
+##                     3rd Qu.:1     3rd Qu.:1649   3rd Qu.:3.00           
+##                     Max.   :1     Max.   :1968   Max.   :4.00           
+##     Gender            HourlyRate    JobInvolvement     JobLevel    
+##  Length:33          Min.   :34.00   Min.   :1.000   Min.   :1.000  
+##  Class :character   1st Qu.:57.00   1st Qu.:2.000   1st Qu.:1.000  
+##  Mode  :character   Median :73.00   Median :2.000   Median :1.000  
+##                     Mean   :70.09   Mean   :2.303   Mean   :1.788  
+##                     3rd Qu.:82.00   3rd Qu.:3.000   3rd Qu.:2.000  
+##                     Max.   :98.00   Max.   :3.000   Max.   :4.000  
+##    JobRole          JobSatisfaction MaritalStatus      MonthlyIncome  
+##  Length:33          Min.   :1.000   Length:33          Min.   : 1102  
+##  Class :character   1st Qu.:1.000   Class :character   1st Qu.: 2439  
+##  Mode  :character   Median :3.000   Mode  :character   Median : 4284  
+##                     Mean   :2.515                      Mean   : 5256  
+##                     3rd Qu.:3.000                      3rd Qu.: 6735  
+##                     Max.   :4.000                      Max.   :12936  
+##   MonthlyRate    NumCompaniesWorked    Over18            OverTime        
+##  Min.   : 3164   Min.   :0.000      Length:33          Length:33         
+##  1st Qu.: 9571   1st Qu.:1.000      Class :character   Class :character  
+##  Median :14753   Median :3.000      Mode  :character   Mode  :character  
+##  Mean   :14585   Mean   :3.455                                           
+##  3rd Qu.:20739   3rd Qu.:6.000                                           
+##  Max.   :26092   Max.   :9.000                                           
+##  PercentSalaryHike PerformanceRating RelationshipSatisfaction StandardHours
+##  Min.   :11.00     Min.   :3.000     Min.   :1.000            Min.   :80   
+##  1st Qu.:12.00     1st Qu.:3.000     1st Qu.:1.000            1st Qu.:80   
+##  Median :14.00     Median :3.000     Median :2.000            Median :80   
+##  Mean   :15.27     Mean   :3.182     Mean   :2.485            Mean   :80   
+##  3rd Qu.:18.00     3rd Qu.:3.000     3rd Qu.:4.000            3rd Qu.:80   
+##  Max.   :24.00     Max.   :4.000     Max.   :4.000            Max.   :80   
+##  StockOptionLevel TotalWorkingYears TrainingTimesLastYear WorkLifeBalance
+##  Min.   :0.0000   Min.   : 0.000    Min.   :1.000         Min.   :1.000  
+##  1st Qu.:0.0000   1st Qu.: 5.000    1st Qu.:2.000         1st Qu.:2.000  
+##  Median :0.0000   Median :10.000    Median :2.000         Median :3.000  
+##  Mean   :0.3636   Mean   : 9.576    Mean   :2.758         Mean   :2.485  
+##  3rd Qu.:0.0000   3rd Qu.:12.000    3rd Qu.:3.000         3rd Qu.:3.000  
+##  Max.   :3.0000   Max.   :25.000    Max.   :6.000         Max.   :4.000  
+##  YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion
+##  Min.   : 0.000   Min.   :0.000      Min.   : 0.00          
+##  1st Qu.: 1.000   1st Qu.:0.000      1st Qu.: 0.00          
+##  Median : 4.000   Median :2.000      Median : 1.00          
+##  Mean   : 5.909   Mean   :2.879      Mean   : 2.97          
+##  3rd Qu.:10.000   3rd Qu.:7.000      3rd Qu.: 6.00          
+##  Max.   :23.000   Max.   :8.000      Max.   :14.00          
+##  YearsWithCurrManager
+##  Min.   : 0.000      
+##  1st Qu.: 0.000      
+##  Median : 2.000      
+##  Mean   : 3.273      
+##  3rd Qu.: 7.000      
+##  Max.   :10.000</code></pre>
+<pre class="r"><code>AttritionBoth = Employee %&gt;% filter (EducationField == &quot;Life Sciences&quot;) %&gt;% filter ( Gender == &quot;Male&quot;) 
+summary(Male)</code></pre>
+<pre><code>##        ID             Age        Attrition         BusinessTravel    
+##  Min.   : 29.0   Min.   :18.0   Length:33          Length:33         
+##  1st Qu.:233.0   1st Qu.:29.0   Class :character   Class :character  
+##  Median :429.0   Median :34.0   Mode  :character   Mode  :character  
+##  Mean   :391.9   Mean   :35.7                                        
+##  3rd Qu.:568.0   3rd Qu.:41.0                                        
+##  Max.   :841.0   Max.   :56.0                                        
+##    DailyRate       Department        DistanceFromHome   Education    
+##  Min.   : 103.0   Length:33          Min.   : 1.000   Min.   :1.000  
+##  1st Qu.: 391.0   Class :character   1st Qu.: 2.000   1st Qu.:2.000  
+##  Median : 626.0   Mode  :character   Median : 6.000   Median :3.000  
+##  Mean   : 730.4                      Mean   : 9.879   Mean   :2.788  
+##  3rd Qu.:1089.0                      3rd Qu.:23.000   3rd Qu.:3.000  
+##  Max.   :1475.0                      Max.   :29.000   Max.   :4.000  
+##  EducationField     EmployeeCount EmployeeNumber EnvironmentSatisfaction
+##  Length:33          Min.   :1     Min.   :  19   Min.   :1.00           
+##  Class :character   1st Qu.:1     1st Qu.: 364   1st Qu.:1.00           
+##  Mode  :character   Median :1     Median :1127   Median :2.00           
+##                     Mean   :1     Mean   :1032   Mean   :2.03           
+##                     3rd Qu.:1     3rd Qu.:1649   3rd Qu.:3.00           
+##                     Max.   :1     Max.   :1968   Max.   :4.00           
+##     Gender            HourlyRate    JobInvolvement     JobLevel    
+##  Length:33          Min.   :34.00   Min.   :1.000   Min.   :1.000  
+##  Class :character   1st Qu.:57.00   1st Qu.:2.000   1st Qu.:1.000  
+##  Mode  :character   Median :73.00   Median :2.000   Median :1.000  
+##                     Mean   :70.09   Mean   :2.303   Mean   :1.788  
+##                     3rd Qu.:82.00   3rd Qu.:3.000   3rd Qu.:2.000  
+##                     Max.   :98.00   Max.   :3.000   Max.   :4.000  
+##    JobRole          JobSatisfaction MaritalStatus      MonthlyIncome  
+##  Length:33          Min.   :1.000   Length:33          Min.   : 1102  
+##  Class :character   1st Qu.:1.000   Class :character   1st Qu.: 2439  
+##  Mode  :character   Median :3.000   Mode  :character   Median : 4284  
+##                     Mean   :2.515                      Mean   : 5256  
+##                     3rd Qu.:3.000                      3rd Qu.: 6735  
+##                     Max.   :4.000                      Max.   :12936  
+##   MonthlyRate    NumCompaniesWorked    Over18            OverTime        
+##  Min.   : 3164   Min.   :0.000      Length:33          Length:33         
+##  1st Qu.: 9571   1st Qu.:1.000      Class :character   Class :character  
+##  Median :14753   Median :3.000      Mode  :character   Mode  :character  
+##  Mean   :14585   Mean   :3.455                                           
+##  3rd Qu.:20739   3rd Qu.:6.000                                           
+##  Max.   :26092   Max.   :9.000                                           
+##  PercentSalaryHike PerformanceRating RelationshipSatisfaction StandardHours
+##  Min.   :11.00     Min.   :3.000     Min.   :1.000            Min.   :80   
+##  1st Qu.:12.00     1st Qu.:3.000     1st Qu.:1.000            1st Qu.:80   
+##  Median :14.00     Median :3.000     Median :2.000            Median :80   
+##  Mean   :15.27     Mean   :3.182     Mean   :2.485            Mean   :80   
+##  3rd Qu.:18.00     3rd Qu.:3.000     3rd Qu.:4.000            3rd Qu.:80   
+##  Max.   :24.00     Max.   :4.000     Max.   :4.000            Max.   :80   
+##  StockOptionLevel TotalWorkingYears TrainingTimesLastYear WorkLifeBalance
+##  Min.   :0.0000   Min.   : 0.000    Min.   :1.000         Min.   :1.000  
+##  1st Qu.:0.0000   1st Qu.: 5.000    1st Qu.:2.000         1st Qu.:2.000  
+##  Median :0.0000   Median :10.000    Median :2.000         Median :3.000  
+##  Mean   :0.3636   Mean   : 9.576    Mean   :2.758         Mean   :2.485  
+##  3rd Qu.:0.0000   3rd Qu.:12.000    3rd Qu.:3.000         3rd Qu.:3.000  
+##  Max.   :3.0000   Max.   :25.000    Max.   :6.000         Max.   :4.000  
+##  YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion
+##  Min.   : 0.000   Min.   :0.000      Min.   : 0.00          
+##  1st Qu.: 1.000   1st Qu.:0.000      1st Qu.: 0.00          
+##  Median : 4.000   Median :2.000      Median : 1.00          
+##  Mean   : 5.909   Mean   :2.879      Mean   : 2.97          
+##  3rd Qu.:10.000   3rd Qu.:7.000      3rd Qu.: 6.00          
+##  Max.   :23.000   Max.   :8.000      Max.   :14.00          
+##  YearsWithCurrManager
+##  Min.   : 0.000      
+##  1st Qu.: 0.000      
+##  Median : 2.000      
+##  Mean   : 3.273      
+##  3rd Qu.: 7.000      
+##  Max.   :10.000</code></pre>
+<pre class="r"><code>trainIndices2 = sample(1:dim(AttritionBoth)[1],round(splitPerc * dim(AttritionBoth)[1]))
+train2 = AttritionBoth[trainIndices2,]
+test2 = AttritionBoth[-trainIndices2,]
+
+AttritionBoth %&gt;% ggplot(aes(x = HourlyRate, TotalWorkingYears, color = Attrition)) + geom_point() + ggtitle(&quot;Higher hourly rate work longer&quot;)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-17.png" width="672" /></p>
+<pre class="r"><code># k = 3
+classifications = knn(train2[,c(1,2)],test2[,c(1,2)],train2$Attrition, prob = TRUE, k = 3)
+table(classifications,test2$Attrition)</code></pre>
+<pre><code>##                
+## classifications No Yes
+##             No  45   6
+##             Yes  3   0</code></pre>
+<pre class="r"><code>confusionMatrix(table(classifications,test2$Attrition))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                
+## classifications No Yes
+##             No  45   6
+##             Yes  3   0
+##                                           
+##                Accuracy : 0.8333          
+##                  95% CI : (0.7071, 0.9208)
+##     No Information Rate : 0.8889          
+##     P-Value [Acc &gt; NIR] : 0.9282          
+##                                           
+##                   Kappa : -0.08           
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.5050          
+##                                           
+##             Sensitivity : 0.9375          
+##             Specificity : 0.0000          
+##          Pos Pred Value : 0.8824          
+##          Neg Pred Value : 0.0000          
+##              Prevalence : 0.8889          
+##          Detection Rate : 0.8333          
+##    Detection Prevalence : 0.9444          
+##       Balanced Accuracy : 0.4688          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code>#Prediction
+Model1_fit = lm(HourlyRate ~ JobSatisfaction+MonthlyIncome+MonthlyRate, data = train)
+summary(Model1_fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = HourlyRate ~ JobSatisfaction + MonthlyIncome + MonthlyRate, 
+##     data = train)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -33.420 -13.531  -0.614  12.817  35.159 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      6.948e+01  7.963e+00   8.725 1.09e-11 ***
+## JobSatisfaction -2.617e+00  2.633e+00  -0.994    0.325    
+## MonthlyIncome    1.129e-03  7.119e-04   1.586    0.119    
+## MonthlyRate     -8.982e-06  4.035e-04  -0.022    0.982    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 19.45 on 51 degrees of freedom
+## Multiple R-squared:  0.06176,    Adjusted R-squared:  0.006571 
+## F-statistic: 1.119 on 3 and 51 DF,  p-value: 0.3501</code></pre>
+<pre class="r"><code>Model1_Preds = predict(Model1_fit, newdata = test)
+as.data.frame(Model1_Preds)</code></pre>
+<pre><code>##    Model1_Preds
+## 1      75.98240
+## 4      71.74060
+## 5      66.29327
+## 6      60.20214
+## 9      68.16919
+## 11     75.04463
+## 15     69.02958
+## 17     66.71251
+## 23     62.04985
+## 24     65.59483
+## 26     66.80199
+## 28     66.20254
+## 47     69.80843
+## 51     69.72508
+## 54     69.05854
+## 63     85.47703
+## 64     69.47305
+## 65     67.59543</code></pre>
+<pre class="r"><code>MSPE = mean((test$HourlyRate - Model1_Preds)^2)
+sqrt(MSPE)</code></pre>
+<pre><code>## [1] 21.07824</code></pre>
+<pre class="r"><code>test %&gt;% ggplot(aes(x = Age, y = HourlyRate)) + geom_point() + geom_smooth(method = &quot;lm&quot;) + geom_line(data = test, aes( x = Age, y = Model1_Preds, col = &quot;red&quot;)) + ggtitle(&quot;Hourly Rate Predictions&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-18.png" width="672" /></p>
+<pre class="r"><code>plot(x=Model1_Preds, y=test$HourlyRate,
+     xlab=&#39;Predicted Values&#39;,
+     ylab=&#39;Actual Values&#39;,
+     main=&#39;Predicted vs. Actual Values&#39;)
+
+#add diagonal line for estimated regression line
+abline(a=0, b=1)</code></pre>
+<p><img src="CaseStudy2_files/figure-html/unnamed-chunk-1-19.png" width="672" /></p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+---
+title: "TalentManagement"
+author: "Akib Hossain"
+date: "11/22/2021"
+output: html_document
+---
+
+```{r }
+
+
+
+library(plotly)
+library(ggplot2)
+library(GGally)
+library(ggthemes)
+library(tidyverse)
+library(dplyr)
+library(class)
+library(caret)
+library(e1071)
+library(fpp)
+library(shiny)
+# install.packages("pscl", repos = "https://cran.rstudio.com")
+# options(repos="https://cran.rstudio.com" )
+
+ 
+ 
+ 
+Employee_csv_loc <- "./CaseStudy2-data.csv"
+
+Employee <- read.csv(Employee_csv_loc, header = TRUE)
+ 
+ 
+#Graphs----------------------------------------
+p = Employee %>% 
+ggplot(aes(x = Age)) + geom_histogram()
+ggplotly(p)
+
+p = Employee %>% #filter(Age == (24:47))  %>% 
+ggplot(aes(x = Age)) + geom_histogram()
+ggplotly(p)
+
+Employee %>% filter(Age == (24:47))  %>% 
+ggplot(aes(y = Age, color = Attrition)) + 
+geom_boxplot()
+
+Yes = Employee %>% filter(Attrition == "Yes")
+
+#Age and Attrition
+#Middle aged individuals have a lower attrition
+A = Employee %>% #filter(Age > 24 | Age < 46)  %>% 
+ggplot(aes(y = Age, color = Attrition)) + 
+geom_boxplot() + ggtitle("Age and Attrition") +
+theme_economist()
+
+A + ggtitle("Age and Attrition") +
+  xlab("Turnover") + ylab("Age") + labs(color = "Attrition")
+
+
+
+
+
+#Healthcare Rep and Research Scientist have the highest job satisfaction
+#JobRole = Employee %>% group_by(JobRole) %>% summarize(meanJS = mean(JobSatisfaction), count = #n()) 
+
+# p = JobRole %>% ggplot(aes(x=JobRole, y = meanJS)) + geom_col()
+#ggplotly(p)
+
+# p = q %>% ggplot(aes(x=JobRole, y = count, color = as.factor(Attrition) )) + geom_point()
+#ggplotly(p)
+
+
+
+
+
+#Distance and Attition
+# A lower distance from work has a high number of non attrition.
+
+
+
+D = ggplot(Employee, aes( x = DistanceFromHome, color = as.factor(Attrition))) +
+  geom_histogram(position = "Dodge") + theme_economist()
+ 
+D + ggtitle("Distance and Attrition") +
+  xlab("Distance from home") + ylab("Employees") + labs(color = "Attrition")
+
+
+
+
+#Life Sciences has the highest Attrition
+LS = Yes %>% 
+ggplot(aes(x = EducationField)) + geom_bar(color = "Blue", fill = "Orange")
+ggplotly(LS) + theme_economist()
+
+LS + ggtitle("Life Sciences has the highest Attrition") +
+  xlab("Education") + ylab("Attrition") 
+
+
+#Male have a higher Attrition
+AT = Yes %>% 
+ggplot(aes(x = Gender)) +geom_bar(color = "Blue", fill = "Orange")
+ggplotly(AT) + theme_economist()
+
+AT + ggtitle("Men have the highest Attrition") +
+  xlab("Gender") + ylab("Attrition") 
+
+
+
+#R&D have the highest number of employees
+D = Employee %>% 
+ggplot(aes(x = Department)) + geom_bar(color = "Black", fill = "Red")
+ggplotly(D) + theme_economist()
+
+D + ggtitle("Research and Development") +
+  xlab("Department") + ylab("Employees")
+
+#HR have highest worklife balance
+HR = Employee %>% filter(Employee$Department == 'Human Resources') %>%
+ggplot(aes(x = Department, fill = as.factor(WorkLifeBalance))) + geom_bar()
+ggplotly(HR) + theme_economist()
+
+HR + ggtitle("Human Resource best worklife balance") +
+  xlab("Department") + ylab("Employee")
+
+#Sales have lowest attrition
+S = Employee %>% filter(Employee$Department == 'Sales') %>%
+ggplot(aes(x = Department, fill = as.factor(Attrition))) + geom_bar()
+ggplotly(S) + theme_economist()
+
+S + ggtitle("Sales have the lowest Attrition") +
+  xlab("Department") + ylab("Attrition")
+
+#sales has a higher dailyrate
+DR = Yes %>% 
+ggplot(aes(x = Department, y = DailyRate, fill = as.factor(Department))) + geom_boxplot()
+ggplotly(DR) + theme_economist()
+
+DR + ggtitle("Sales has a higher daily rate") +
+  xlab("Department") + ylab("Daily Rate") + labs(fill = "Department")
+
+
+
+
+#KNN -------------------------------------------------------
+
+set.seed(6)
+splitPerc = .75
+MaleFemale = Yes %>% filter (EducationField == "Marketing" |EducationField == "Life Sciences" ) 
+summary(MaleFemale)
+
+
+trainIndices = sample(1:dim(MaleFemale)[1],round(splitPerc * dim(MaleFemale)[1]))
+train = MaleFemale[trainIndices,]
+test = MaleFemale[-trainIndices,]
+
+MaleFemale %>% ggplot(aes(x = HourlyRate, TotalWorkingYears, color = Gender)) + geom_point() + ggtitle("Higher hourly rate work longer")
+
+
+MaleFemaleM = Yes %>% filter (EducationField == "Marketing")
+MaleFemaleM %>% ggplot(aes(x = Gender,  color = EducationField)) + geom_bar() + ggtitle("Marketing and Gender")
+
+
+MaleFemaleL = Yes %>% filter (EducationField == "Life Sciences")
+MaleFemaleL %>% ggplot(aes(x = Gender,  color = EducationField)) + geom_bar() + ggtitle("Life Sciences and Gender")
+
+
+# k = 3
+classifications = knn(train[,c(1,2)],test[,c(1,2)],train$EducationField, prob = TRUE, k = 3)
+table(classifications,test$EducationField)
+confusionMatrix(table(classifications,test$EducationField))
+
+
+#Prediction
+Model1_fit = lm(HourlyRate ~ JobSatisfaction+MonthlyIncome+MonthlyRate, data = train)
+summary(Model1_fit)
+Model1_Preds = predict(Model1_fit, newdata = test)
+as.data.frame(Model1_Preds)
+
+MSPE = mean((test$HourlyRate - Model1_Preds)^2)
+sqrt(MSPE)
+
+test %>% ggplot(aes(x = DistanceFromHome, y = HourlyRate)) + geom_point() + geom_smooth(method = "lm") + geom_line(data = test, aes( x = DistanceFromHome, y = Model1_Preds, col = "red")) 
+
+plot(x=Model1_Preds, y=test$HourlyRate,
+     xlab='Predicted Values',
+     ylab='Actual Values',
+     main='Predicted vs. Actual Values')
+
+#add diagonal line for estimated regression line
+abline(a=0, b=1)
+
+
+
+#KNN 2 -------------------------------------------------------
+
+set.seed(6)
+splitPerc = .75
+Male = Yes %>% filter (EducationField == "Life Sciences") %>% filter ( Gender == "Male") 
+summary(Male)
+
+AttritionBoth = Employee %>% filter (EducationField == "Life Sciences") %>% filter ( Gender == "Male") 
+summary(Male)
+
+
+trainIndices2 = sample(1:dim(AttritionBoth)[1],round(splitPerc * dim(AttritionBoth)[1]))
+train2 = AttritionBoth[trainIndices2,]
+test2 = AttritionBoth[-trainIndices2,]
+
+AttritionBoth %>% ggplot(aes(x = HourlyRate, TotalWorkingYears, color = Attrition)) + geom_point() + ggtitle("Higher hourly rate work longer")
+
+
+
+# k = 3
+classifications = knn(train2[,c(1,2)],test2[,c(1,2)],train2$Attrition, prob = TRUE, k = 3)
+table(classifications,test2$Attrition)
+confusionMatrix(table(classifications,test2$Attrition))
+
+
+#Prediction
+Model1_fit = lm(HourlyRate ~ JobSatisfaction+MonthlyIncome+MonthlyRate, data = train)
+summary(Model1_fit)
+Model1_Preds = predict(Model1_fit, newdata = test)
+as.data.frame(Model1_Preds)
+
+MSPE = mean((test$HourlyRate - Model1_Preds)^2)
+sqrt(MSPE)
+
+test %>% ggplot(aes(x = Age, y = HourlyRate)) + geom_point() + geom_smooth(method = "lm") + geom_line(data = test, aes( x = Age, y = Model1_Preds, col = "red")) + ggtitle("Hourly Rate Predictions")
+
+plot(x=Model1_Preds, y=test$HourlyRate,
+     xlab='Predicted Values',
+     ylab='Actual Values',
+     main='Predicted vs. Actual Values')
+
+#add diagonal line for estimated regression line
+abline(a=0, b=1)
+
+
+
+
+
+```
+
+
+
